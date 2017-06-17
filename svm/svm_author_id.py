@@ -7,24 +7,45 @@
     Sara has label 0
     Chris has label 1
 """
-    
+
 import sys
 from time import time
 sys.path.append("../tools/")
 from email_preprocess import preprocess
 
 
-### features_train and features_test are the features for the training
-### and testing datasets, respectively
-### labels_train and labels_test are the corresponding item labels
+# features_train and features_test are the features for the training
+# and testing datasets, respectively
+# labels_train and labels_test are the corresponding item labels
 features_train, features_test, labels_train, labels_test = preprocess()
 
-
-
+# features_train = features_train[:len(features_train) / 100]
+# labels_train = labels_train[:len(labels_train) / 100]
 
 #########################################################
 ### your code goes here ###
 
 #########################################################
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
 
+clf = SVC(C=10000.0, kernel="rbf")
 
+t0 = time()
+clf.fit(features_train, labels_train)
+print "training time:", round(time() - t0, 3), "s"
+
+t0 = time()
+pred = clf.predict(features_test)
+print "predicting time:", round(time() - t0, 3), "s"
+
+accuracy = accuracy_score(labels_test, pred)
+
+print "Accuracy: ", accuracy
+
+print "Pred 10: ", pred[10]
+print "Pred 26: ", pred[26]
+print "Pred 50: ", pred[50]
+
+print "Predicted 0: ", sum(1 for p in pred if p == 0), " times"
+print "Predicted 1: ", sum(1 for p in pred if p == 1), " times"
